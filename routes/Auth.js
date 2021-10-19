@@ -8,7 +8,7 @@ const authRequired = require("../middleware/auth")
 
 router.post('/signup', SignupUser)
 router.post('/login', LoginUser)
-router.get("/logout",authRequired,Logout)
+router.post("/logout",authRequired,Logout)
 
 router.put("/update_password",authRequired,ChangePassword)
 module.exports = router
