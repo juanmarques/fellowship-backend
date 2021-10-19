@@ -2,10 +2,10 @@ const User = require('../../model/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const ValidateEmail = require('../../utils/ValidateEmail')
-const {JWT_SECRET,JWT_EXP} = require("../../config")
+const {JWT_SECRET, JWT_EXP} = require("../../config")
 
 module.exports = async (req, res) => {
-    const { name, email, password , postal_code , birthday_date } = req.body
+    const {name, email, password, postal_code, birthday_date} = req.body
     let error = {}
     if (!name || name.trim().length === 0) {
         error.name = 'name field must be required'
@@ -21,12 +21,12 @@ module.exports = async (req, res) => {
     }
 
     if (Object.keys(error).length) {
-        return res.status(422).json({ error })
+        return res.status(422).json({error})
     }
 
     try {
-        const user = await User.findOne({ email })
-        if (user) res.status(400).json({ error: 'email already exists' })
+        const user = await User.findOne({email})
+        if (user) res.status(400).json({error: 'email already exists'})
 
         const hashPassword = await bcrypt.hash(password, 8)
 
@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 
         const saveUser = await registerUser.save()
 
-        const token = jwt.sign({ userId: saveUser.id }, JWT_SECRET, {
+        const token = jwt.sign({userId: saveUser.id}, JWT_SECRET, {
             expiresIn: JWT_EXP,
         })
 
@@ -49,13 +49,11 @@ module.exports = async (req, res) => {
 
         res.status(201).json({
             message: `Account created for ${email}`,
-            data: {
-                token,
-
-            },
+            token,
+            user: saveUser
         })
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
