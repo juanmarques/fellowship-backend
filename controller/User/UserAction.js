@@ -194,7 +194,7 @@ exports.updateProfilePic = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
-        console.log(`UserId : ${userId}`)
+        console.log(`UserId : ${req.userId}`)
         const user = await User.findById(req.userId)
         console.log(`User : ${user}`)
         const { work , city , hobbies , phone , relationship , birthday } = req.body
