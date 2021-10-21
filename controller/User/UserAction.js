@@ -194,9 +194,13 @@ exports.updateProfilePic = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
+        console.log(`UserId : ${userId}`)
         const user = await User.findById(req.userId)
-
+        console.log(`User : ${user}`)
         const { work , city , hobbies , phone , relationship , birthday } = req.body
+
+        console.log(`Work : ${work},city : ${city} hobbies : ${hobbies} phone : ${phone} relationship : ${relationship} 
+        birthday : ${birthday} `)
 
         user.job = work;
         user.city = city;
