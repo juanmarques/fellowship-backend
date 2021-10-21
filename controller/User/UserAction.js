@@ -196,22 +196,14 @@ exports.updateProfile = async (req, res) => {
     try {
         const user = await User.findById(req.userId)
 
-        if (req.params.input === 'name') {
-            user.name = req.body.name
-        }
-        if (req.params.input === 'email') {
-            user.email = req.body.email
-        }
+        const { work , city , hobbies , phone , relationship , birthday } = req.body
 
-        if (req.params.input === 'bio') {
-            user.bio = req.body.bio
-        }
-        if (req.params.input === 'location') {
-            user.location = req.body.location
-        }
-        if (req.params.input === 'education') {
-            user.education = req.body.education
-        }
+        user.job = work;
+        user.city = city;
+        user.hobbies = hobbies;
+        user.contact = phone;
+        user.relationship = relationship;
+        user.birthday_date = birthday;
 
         await user.save()
         res.status(200).json({ message: 'Updated Successfully' })

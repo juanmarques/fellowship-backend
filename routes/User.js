@@ -55,7 +55,7 @@ router.post('/chat/:friendId/send', authRequired, sendMessageToFriend)
 router.get('/chat/:friendId/get_messages', authRequired, getFriendMessages)
 
 router.put('/profile_pic/update', authRequired, updateProfilePic)
-router.put('/update_profile/:input', authRequired, updateProfile)
+router.put('/update_profile', authRequired, updateProfile)
 router.delete('/notifications/clear', authRequired, clearNotification)
 
 module.exports = router
