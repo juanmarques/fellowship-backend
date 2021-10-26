@@ -1,37 +1,20 @@
 const User = require('../../model/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const ValidateEmail = require('../../utils/ValidateEmail')
 const {JWT_SECRET, JWT_EXP} = require("../../config")
 
 module.exports = async (req, res) => {
     const {email, password} = req.body
-    let error = {}
-
-    if (!ValidateEmail(email)) {
-        error.email = 'email address should be valid '
-    }
-    if (!email || email.trim().length === 0) {
-        error.email = 'email field must be required'
-    }
-
-    if (!password || password.trim().length === 0) {
-        error.password = 'password must be required'
-    }
-
-    if (Object.keys(error).length) {
-        return res.status(422).json({error})
-    }
 
     try {
         const user = await User.findOne({email})
         if (!user) {
-            return res.status(400).json({error: 'email not found'})
+            return res.status(400).json({error: 'E-mail não cadastrado ou incorreto'})
         }
 
         const verifyPassword = await bcrypt.compare(password, user.password)
         if (!verifyPassword) {
-            return res.status(400).json({error: 'password is incorrect'})
+            return res.status(400).json({error: 'E-mail e/ou Senha incorreto'})
         }
 
         const token = jwt.sign({userId: user.id}, JWT_SECRET, {
@@ -41,14 +24,13 @@ module.exports = async (req, res) => {
         user.active = true
         await user.save()
 
-
         return res.status(200).json({
-            message: 'login successfully',
+            message: 'login Efetuado com sucesso',
             token,
             user: user
         })
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error: "Something went wrong"})
+        return res.status(500).json({error: "Erro inesperado , por favor entre em contato"})
     }
 }
