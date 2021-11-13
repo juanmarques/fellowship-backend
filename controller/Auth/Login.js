@@ -25,10 +25,22 @@ module.exports = async (req, res) => {
         user.active = true
         await user.save()
 
+        const notifications = await Notification.find({ user: user.id }).sort({
+            createdAt: -1,
+        })
+        let notifData = notifications.map((notif) => {
+            return {
+                id: notif.id,
+                body: notif.body,
+                createdAt: notif.createdAt,
+            }
+        })
+
         return res.status(200).json({
             message: 'login Efetuado com sucesso',
             token,
-            user: FilterUserData(user)
+            user: FilterUserData(user),
+            notifications: notifData
         })
     } catch (err) {
         console.log(err)
