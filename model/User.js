@@ -67,6 +67,10 @@ const UserSchema = new Schema(
             type: String,
             trim: true,
         },
+        about: {
+            type: String,
+            trim: true,
+        },
 
         friends: [{type: Schema.Types.ObjectId, ref: 'User'}],
     },

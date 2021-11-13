@@ -7,10 +7,11 @@ module.exports = (user) => {
         job: user.job,
         city: user.city,
         hobbies: user.hobbies,
-        contact: user.contact,
+        phone: user.contact,
         relationship: user.relationship,
         active: user.active,
         createdAt: user.createdAt,
+        about: user.about,
         friends: user.friends.map((friend) => ({
             id: friend._id,
             name: friend.name
