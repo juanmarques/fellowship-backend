@@ -1,28 +1,10 @@
 const User = require('../../model/User')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const ValidateEmail = require('../../utils/ValidateEmail')
 const {JWT_SECRET, JWT_EXP} = require("../../config")
 
 module.exports = async (req, res) => {
-    const {name, email, password, postal_code, birthday_date} = req.body
-    let error = {}
-    if (!name || name.trim().length === 0) {
-        error.name = 'name field must be required'
-    }
-    if (!ValidateEmail(email)) {
-        error.email = 'email address should be valid '
-    }
-    if (!email || email.trim().length === 0) {
-        error.email = 'email field must be required'
-    }
-    if (!password || password.trim().length === 0) {
-        error.password = 'password must be required'
-    }
-
-    if (Object.keys(error).length) {
-        return res.status(422).json({error})
-    }
+    const {name, email, password, postal_code, birthday_date, neighborhood} = req.body
 
     try {
         const user = await User.findOne({email})
@@ -35,7 +17,8 @@ module.exports = async (req, res) => {
             email,
             password: hashPassword,
             postal_code,
-            birthday_date
+            birthday_date,
+            neighborhood
         })
 
         const saveUser = await registerUser.save()

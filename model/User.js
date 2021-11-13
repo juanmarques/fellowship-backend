@@ -23,6 +23,10 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
+        neighborhood: {
+            type: String,
+            required: true,
+        },
         birthday_date: {
             type: String,
             required: true,
