@@ -1,4 +1,5 @@
 const User = require('../../model/User')
+const Notification = require('../../model/Notification')
 const FilterUserData = require('../../utils/FilterUserData')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
