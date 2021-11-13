@@ -1,4 +1,5 @@
 const User = require('../../model/User')
+const FilterUserData = require('../../utils/FilterUserData')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const {JWT_SECRET, JWT_EXP} = require("../../config")
@@ -27,7 +28,7 @@ module.exports = async (req, res) => {
         return res.status(200).json({
             message: 'login Efetuado com sucesso',
             token,
-            user: user
+            user: FilterUserData(user)
         })
     } catch (err) {
         console.log(err)

@@ -10,7 +10,6 @@ module.exports = (user) => {
         phone: user.contact,
         relationship: user.relationship,
         active: user.active,
-        createdAt: user.createdAt,
         about: user.about,
         friends: user.friends.map((friend) => ({
             id: friend._id,
