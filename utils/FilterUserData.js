@@ -4,7 +4,7 @@ module.exports = (user) => {
         name: user.name,
         email: user.email,
         profile_pic: user.profile_pic,
-        job: user.job,
+        work: user.job,
         city: user.city,
         hobbies: user.hobbies,
         phone: user.contact,
