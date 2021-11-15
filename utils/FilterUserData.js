@@ -12,6 +12,7 @@ module.exports = (user) => {
         active: user.active,
         about: user.about,
         neighborhood : user.neighborhood,
+        birthday: user.birthday_date,
         friends: user.friends.map((friend) => ({
             id: friend._id,
             name: friend.name
