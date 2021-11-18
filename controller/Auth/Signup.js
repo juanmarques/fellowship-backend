@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const {JWT_SECRET, JWT_EXP} = require("../../config")
 
 module.exports = async (req, res) => {
-    const {name, email, password, postal_code, birthday_date, neighborhood} = req.body
+    const {name, email, password, postal_code, birthday_date, neighbourhood} = req.body
 
     try {
         const user = await User.findOne({email})
@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
             password: hashPassword,
             postal_code,
             birthday_date,
-            neighborhood
+            neighbourhood
         })
 
         const saveUser = await registerUser.save()

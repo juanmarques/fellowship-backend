@@ -23,7 +23,7 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
-        neighborhood: {
+        neighbourhood: {
             type: String,
             required: true,
         },

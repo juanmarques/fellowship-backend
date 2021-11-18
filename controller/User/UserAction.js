@@ -230,9 +230,14 @@ exports.updateProfile = async (req, res) => {
     }
 }
 
-const isEmpty = ((value) => {
-    return !value;
-})
+exports.updatePersonalInfo = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({error: "Something went wrong"})
+    }
+}
 
 exports.clearNotification = async (req, res) => {
     try {

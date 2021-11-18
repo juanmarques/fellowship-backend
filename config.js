@@ -5,4 +5,6 @@ module.exports = {
     JWT_EXP: process.env.JWT_EXPIRE || '10h',
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || "admin@gmail.com",
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "admin@123",
+    imgBucket: "photos",
+    baseUrl: process.env.BASE_URL + "/files" || "http://localhost:4001/files/"
 }
