@@ -20,8 +20,11 @@ const {
   updateProfilePic,
   updateProfile,
   clearNotification,
+  updatePersonalInfo,
+  updatePersonalSecurityInfo,
 } = require('../controller/User/UserAction')
 const authRequired = require('../middleware/auth')
+
 const {uploadFiles} = require("../controller/User/UserAction");
 
 router.get('/me', authRequired, me)
@@ -57,6 +60,10 @@ router.get('/chat/:friendId/get_messages', authRequired, getFriendMessages)
 
 router.put('/profile_pic/update', authRequired, updateProfilePic)
 router.put('/update_profile', authRequired, updateProfile)
+
+router.put('/update_personal_info', authRequired, updatePersonalInfo)
+router.put('/update_personal_security_info', authRequired, updatePersonalSecurityInfo)
+
 router.delete('/notifications/clear', authRequired, clearNotification)
 router.post("/upload", uploadFiles);
 

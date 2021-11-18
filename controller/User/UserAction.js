@@ -6,6 +6,7 @@ const CreateNotification = require('../../utils/CreateNotification')
 const upload = require("../../middleware/uploadImage");
 const dbConfig = require("../../config");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 exports.sendFriendRequest = async (req, res) => {
     try {
@@ -233,6 +234,40 @@ exports.updateProfile = async (req, res) => {
 exports.updatePersonalInfo = async (req, res) => {
     try {
         const user = await User.findById(req.userId)
+        const {name, postal_code, neighbourhood} = req.body;
+
+        if (name !== undefined) {
+            user.name = name;
+        }
+        if (postal_code !== undefined) {
+            user.postal_code = postal_code;
+        }
+        if (neighbourhood !== undefined) {
+            user.neighbourhood = neighbourhood;
+        }
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({error: "Something went wrong"})
+    }
+}
+
+exports.updatePersonalSecurityInfo = async (req, res) => {
+
+    const {newPassword, email} = req.body
+
+    try {
+        const user = await User.findById(req.userId)
+
+        if (newPassword !== undefined) {
+            user.password = await bcrypt.hash(newPassword, 8)
+        }
+        if (email !== undefined) {
+            user.email = email;
+        }
+        await user.save()
+        res.status(200).json({message: "Password Updated Successfully"})
+
     } catch (err) {
         console.log(err)
         return res.status(500).json({error: "Something went wrong"})
