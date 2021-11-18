@@ -3,22 +3,25 @@ const FriendRequest = require('../../model/FriendRequest')
 const FilterUserData = require('../../utils/FilterUserData')
 const Notification = require('../../model/Notification')
 const CreateNotification = require('../../utils/CreateNotification')
+const upload = require("../../middleware/uploadImage");
+const dbConfig = require("../../config");
+const mongoose = require("mongoose");
 
 exports.sendFriendRequest = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId)
         if (!user) {
-            return res.status(404).json({ error: 'User not found' })
+            return res.status(404).json({error: 'User not found'})
         }
 
         if (req.userId === req.params.userId) {
             return res
                 .status(400)
-                .json({ error: 'You cannot send friend request to yourself' })
+                .json({error: 'You cannot send friend request to yourself'})
         }
 
         if (user.friends.includes(req.userId)) {
-            return res.status(400).json({ error: 'Already Friends' })
+            return res.status(400).json({error: 'Already Friends'})
         }
 
         const friendRequest = await FriendRequest.findOne({
@@ -27,7 +30,7 @@ exports.sendFriendRequest = async (req, res) => {
         })
 
         if (friendRequest) {
-            return res.status(400).json({ error: 'Friend Request already send' })
+            return res.status(400).json({error: 'Friend Request already send'})
         }
 
         const newFriendRequest = new FriendRequest({
@@ -46,7 +49,7 @@ exports.sendFriendRequest = async (req, res) => {
 
         res
             .status(200)
-            .json({ message: 'Friend Request Sended', friend: chunkData })
+            .json({message: 'Friend Request Sended', friend: chunkData})
 
         const sender = await FriendRequest.findById(save.id).populate('sender')
         let notification = await CreateNotification({
@@ -61,12 +64,12 @@ exports.sendFriendRequest = async (req, res) => {
         if (user.socketId) {
             req.io
                 .to(user.socketId)
-                .emit('friend-request-status', { sender: senderData })
-            req.io.to(user.socketId).emit('Notification', { data: notification })
+                .emit('friend-request-status', {sender: senderData})
+            req.io.to(user.socketId).emit('Notification', {data: notification})
         }
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
 
@@ -76,29 +79,29 @@ exports.acceptFriendRequest = async (req, res) => {
         if (!friendsRequest) {
             return res
                 .status(404)
-                .json({ error: 'Request already accepted or not sended yet' })
+                .json({error: 'Request already accepted or not sended yet'})
         }
 
         const sender = await User.findById(friendsRequest.sender)
         if (sender.friends.includes(friendsRequest.receiver)) {
-            return res.status(400).json({ error: 'already in your friend lists' })
+            return res.status(400).json({error: 'already in your friend lists'})
         }
         sender.friends.push(req.userId)
         await sender.save()
 
         const currentUser = await User.findById(req.userId)
         if (currentUser.friends.includes(friendsRequest.sender)) {
-            return res.status(400).json({ error: 'already  friend ' })
+            return res.status(400).json({error: 'already  friend '})
         }
         currentUser.friends.push(friendsRequest.sender)
         await currentUser.save()
 
         const chunkData = FilterUserData(sender)
 
-        await FriendRequest.deleteOne({ _id: req.params.requestId })
+        await FriendRequest.deleteOne({_id: req.params.requestId})
         res
             .status(200)
-            .json({ message: 'Friend Request Accepted', user: chunkData })
+            .json({message: 'Friend Request Accepted', user: chunkData})
 
         let notification = await CreateNotification({
             user: sender.id,
@@ -110,11 +113,11 @@ exports.acceptFriendRequest = async (req, res) => {
                 user: currentUserData,
                 request_id: req.params.requestId,
             })
-            req.io.to(sender.socketId).emit('Notification', { data: notification })
+            req.io.to(sender.socketId).emit('Notification', {data: notification})
         }
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
 
@@ -126,11 +129,11 @@ exports.cancelSendedFriendRequest = async (req, res) => {
         if (!friendsRequest) {
             return res
                 .status(404)
-                .json({ error: 'Request already cenceled or not sended yet' })
+                .json({error: 'Request already cenceled or not sended yet'})
         }
-        await FriendRequest.deleteOne({ _id: req.params.requestId })
+        await FriendRequest.deleteOne({_id: req.params.requestId})
 
-        res.status(200).json({ message: 'Friend Request Canceled' })
+        res.status(200).json({message: 'Friend Request Canceled'})
         if (friendsRequest.receiver.socketId) {
             req.io
                 .to(friendsRequest.receiver.socketId)
@@ -140,7 +143,7 @@ exports.cancelSendedFriendRequest = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
 
@@ -152,11 +155,11 @@ exports.declineFriendRequest = async (req, res) => {
         if (!friendsRequest) {
             return res
                 .status(404)
-                .json({ error: 'Request already declined or not sended yet' })
+                .json({error: 'Request already declined or not sended yet'})
         }
-        await FriendRequest.deleteOne({ _id: req.params.requestId })
+        await FriendRequest.deleteOne({_id: req.params.requestId})
 
-        res.status(200).json({ message: 'Friend Request Declined' })
+        res.status(200).json({message: 'Friend Request Declined'})
         if (friendsRequest.sender.socketId) {
             req.io
                 .to(friendsRequest.sender.socketId)
@@ -166,12 +169,12 @@ exports.declineFriendRequest = async (req, res) => {
         }
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
 
 exports.updateProfilePic = async (req, res) => {
-    const { profile_url } = req.body
+    const {profile_url} = req.body
     try {
         const user = await User.findById(req.userId)
         user.profile_pic = profile_url
@@ -185,39 +188,99 @@ exports.updateProfilePic = async (req, res) => {
                 ...FilterUserData(friend),
             }
         })
-        res.status(200).json({ message: 'profile image updated', user: userData })
+        res.status(200).json({message: 'profile image updated', user: userData})
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
 
 exports.updateProfile = async (req, res) => {
     try {
-        console.log(`UserId : ${req.userId}`)
         const user = await User.findById(req.userId)
-        const { work , city , hobbies , phone , relationship , birthday } = req.body
-        user.job = work;
-        user.city = city;
-        user.hobbies = hobbies;
-        user.contact = phone;
-        user.relationship = relationship;
-        user.birthday_date = birthday;
 
+        const body = req.body
+
+        if (body.work !== null) {
+            user.job = body.work;
+        } else if (body.city !== null) {
+            user.city = body.city;
+        } else if (body.hobbies !== null) {
+            user.hobbies = body.hobbies;
+        } else if (body.phone !== null) {
+            user.contact = body.phone;
+        } else if (body.relationship !== null) {
+            user.relationship = body.relationship;
+        } else if (body.birthday !== null) {
+            user.birthday_date = body.birthday;
+        }
         await user.save()
-        res.status(200).json({ message: 'Updated Successfully' })
+        res.status(200).json({message: 'Updated Successfully'})
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
+
+const isEmpty = ((value) => {
+    return !value;
+})
 
 exports.clearNotification = async (req, res) => {
     try {
-        await Notification.deleteMany({ user: req.userId })
-        res.status(200).json({ message: 'Notification Cleared Successfully' })
+        await Notification.deleteMany({user: req.userId})
+        res.status(200).json({message: 'Notification Cleared Successfully'})
     } catch (err) {
         console.log(err)
-        return res.status(500).json({error:"Something went wrong"})
+        return res.status(500).json({error: "Something went wrong"})
     }
 }
+
+exports.uploadFiles = async (req, res) => {
+    try {
+        //await upload(req, res);
+        await download(req, res)
+        /*        return res.status(200).send({
+                    message: "Files have been uploaded.",
+                });*/
+    } catch (error) {
+        console.log(error);
+
+        if (error.code === "LIMIT_UNEXPECTED_FILE") {
+            return res.status(400).send({
+                message: "Too many files to upload.",
+            });
+        }
+        return res.status(500).send({
+            message: `Error when trying upload many files: ${error}`,
+        });
+    }
+};
+
+const download = async (req, res) => {
+    try {
+
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: dbConfig.imgBucket
+        });
+
+        let downloadStream = bucket.openDownloadStreamByName('k8s_UPDATES.txt');
+
+        downloadStream.on("data", function (data) {
+            return res.status(200).write(data);
+        });
+
+        downloadStream.on("error", function (err) {
+            console.log(err)
+            return res.status(404).send({message: "Cannot download the Image!"});
+        });
+
+        downloadStream.on("end", () => {
+            return res.end();
+        });
+    } catch (error) {
+        return res.status(500).send({
+            message: error.message,
+        });
+    }
+};
