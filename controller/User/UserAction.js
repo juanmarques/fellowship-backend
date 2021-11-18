@@ -198,22 +198,30 @@ exports.updateProfilePic = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const user = await User.findById(req.userId)
+        const {job, city, hobbies, contact, relationship, birthday_date, about} = req.body
 
-        const body = req.body
-
-        if (body.work !== null) {
-            user.job = body.work;
-        } else if (body.city !== null) {
-            user.city = body.city;
-        } else if (body.hobbies !== null) {
-            user.hobbies = body.hobbies;
-        } else if (body.phone !== null) {
-            user.contact = body.phone;
-        } else if (body.relationship !== null) {
-            user.relationship = body.relationship;
-        } else if (body.birthday !== null) {
-            user.birthday_date = body.birthday;
+        if (job !== undefined) {
+            user.job = job;
         }
+        if (city !== undefined) {
+            user.city = city;
+        }
+        if (hobbies !== undefined) {
+            user.hobbies = hobbies;
+        }
+        if (contact !== undefined) {
+            user.contact = contact;
+        }
+        if (relationship !== undefined) {
+            user.relationship = relationship;
+        }
+        if (birthday_date !== undefined) {
+            user.birthday_date = birthday_date;
+        }
+        if (about !== undefined) {
+            user.about = about;
+        }
+
         await user.save()
         res.status(200).json({message: 'Updated Successfully'})
     } catch (err) {
