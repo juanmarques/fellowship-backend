@@ -3,7 +3,6 @@ const FriendRequest = require('../../model/FriendRequest')
 const FilterUserData = require('../../utils/FilterUserData')
 const Notification = require('../../model/Notification')
 const CreateNotification = require('../../utils/CreateNotification')
-const upload = require("../../middleware/uploadImage");
 const dbConfig = require("../../config");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");

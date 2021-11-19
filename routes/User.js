@@ -65,6 +65,5 @@ router.put('/update_personal_info', authRequired, updatePersonalInfo)
 router.put('/update_personal_security_info', authRequired, updatePersonalSecurityInfo)
 
 router.delete('/notifications/clear', authRequired, clearNotification)
-router.post("/upload", uploadFiles);
 
 module.exports = router
